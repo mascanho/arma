@@ -6,6 +6,7 @@ import { MetricsGrid } from "@/components/metrics-grid"
 import { SentimentChart } from "@/components/sentiment-chart"
 import { MentionsChart } from "@/components/mentions-chart"
 import { RankingsTable } from "@/components/rankings-table"
+import { CompetitorRankingsTable } from "@/components/competitor-rankings-table"
 import { LLMResponses } from "@/components/llm-responses"
 import { AddLLMDialog } from "@/components/add-llm-dialog"
 import { RealtimeChat } from "@/components/realtime-chat"
@@ -37,6 +38,14 @@ const initialLLMs: LLM[] = [
   { id: "5", name: "Perplexity", sentiment: 73, mentions: 5123, rank: 5, change: 2, responseTime: 650, accuracy: 90 },
 ]
 
+const initialCompetitors: LLM[] = [
+  { id: "comp1", name: "Cohere", sentiment: 79, mentions: 7234, rank: 1, change: 1, responseTime: 680, accuracy: 91 },
+  { id: "comp2", name: "Anthropic Claude 2", sentiment: 81, mentions: 8921, rank: 2, change: -1, responseTime: 750, accuracy: 93 },
+  { id: "comp3", name: "Mistral AI", sentiment: 76, mentions: 5432, rank: 3, change: 0, responseTime: 820, accuracy: 88 },
+  { id: "comp4", name: "Stability AI", sentiment: 72, mentions: 4123, rank: 4, change: 2, responseTime: 950, accuracy: 85 },
+  { id: "comp5", name: "Hugging Face", sentiment: 70, mentions: 3876, rank: 5, change: -1, responseTime: 780, accuracy: 86 },
+]
+
 const initialPrompts: MonitoringPrompt[] = [
   {
     id: "1",
@@ -62,6 +71,7 @@ const initialPrompts: MonitoringPrompt[] = [
 
 export default function Page() {
   const [llms, setLLMs] = useState<LLM[]>(initialLLMs)
+  const [competitors, setCompetitors] = useState<LLM[]>(initialCompetitors)
   const [timeRange, setTimeRange] = useState("7d")
   const [prompts, setPrompts] = useState<MonitoringPrompt[]>(initialPrompts)
 
@@ -128,6 +138,8 @@ export default function Page() {
             </div>
 
             <RankingsTable llms={llms} onRemoveLLM={handleRemoveLLM} />
+
+            <CompetitorRankingsTable competitors={competitors} />
 
             <LLMResponses llms={llms} />
           </TabsContent>

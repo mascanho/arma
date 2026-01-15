@@ -185,9 +185,9 @@ export function SettingsDialog({
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 h-full">
+          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20">
             {activeTab === "llm" && (
-              <div className="p-8">
+              <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 8rem)' }}>
                 <div className="mb-8">
                   <h3 className="text-2xl font-semibold mb-2 tracking-tight">
                     LLM Providers
@@ -308,7 +308,7 @@ export function SettingsDialog({
             )}
 
             {activeTab === "general" && (
-              <div className="p-8">
+              <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 8rem)' }}>
                 <div className="mb-8">
                   <h3 className="text-2xl font-semibold mb-2 tracking-tight">
                     General Settings

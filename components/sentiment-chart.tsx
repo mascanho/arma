@@ -44,7 +44,7 @@ export function SentimentChart({ llms, timeRange }: SentimentChartProps) {
                 key={llm.id}
                 type="monotone"
                 dataKey={llm.name}
-                stroke={`hsl(var(--chart-${index + 1}))`}
+                stroke="rgb(37, 31, 156)"
                 strokeWidth={2}
                 dot={false}
               />

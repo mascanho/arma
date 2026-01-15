@@ -33,7 +33,7 @@ export function MentionsChart({ llms, timeRange }: MentionsChartProps) {
                 borderRadius: "8px",
               }}
             />
-            <Bar dataKey="mentions" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="mentions" fill="rgb(37, 31, 156)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
