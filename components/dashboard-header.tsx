@@ -20,7 +20,7 @@ export function DashboardHeader({
   onRemovePrompt,
 }: DashboardHeaderProps) {
   return (
-    <header className="border-b border-border bg-card">
+    <header className="fixed top-0 w-full border-b border-border bg-card z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

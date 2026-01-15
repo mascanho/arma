@@ -144,22 +144,22 @@ export function SettingsDialog({
       <DialogContent className="max-w-full max-h-[90vh] p-0 overflow-hidden">
         <div className="flex h-full bg-background">
           {/* Sidebar */}
-          <div className="w-96 border-r border-border/50 bg-muted/10 backdrop-blur-sm">
-            <div className="p-8 border-b border-border/50">
-              <DialogTitle className="text-xl font-semibold tracking-tight">
+          <div className="w-80 border-r border-border/50 bg-muted/10 backdrop-blur-sm">
+            <div className="p-6 border-b border-border/50">
+              <DialogTitle className="text-lg font-semibold tracking-tight">
                 Settings
               </DialogTitle>
-              <DialogDescription className="text-sm mt-2 text-muted-foreground">
+              <DialogDescription className="text-xs mt-1 text-muted-foreground">
                 Configure your monitoring system
               </DialogDescription>
             </div>
 
-            <nav className="p-4 space-y-1">
+            <nav className="p-3 space-y-1">
               <button
                 onClick={() => setActiveTab("llm")}
-                className={`w-full text-left px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "llm"
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
+                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -170,9 +170,9 @@ export function SettingsDialog({
               </button>
               <button
                 onClick={() => setActiveTab("general")}
-                className={`w-full text-left px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "general"
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
+                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -187,24 +187,24 @@ export function SettingsDialog({
           {/* Main Content */}
           <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20">
             {activeTab === "llm" && (
-              <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 8rem)' }}>
-                <div className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 6rem)' }}>
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-1 tracking-tight">
                     LLM Providers
                   </h3>
-                  <p className="text-base text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Select providers, choose models, and enter API keys
                   </p>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {providers.map((provider) => (
                     <div
                       key={provider.id}
-                      className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-all duration-200"
+                      className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-all duration-200"
                     >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
                           <Checkbox
                             id={`provider-${provider.id}`}
                             checked={provider.enabled}
@@ -230,8 +230,8 @@ export function SettingsDialog({
                       </div>
 
                       {provider.enabled && (
-                        <div className="space-y-4 pl-9 border-l-2 border-border/30 ml-2.5">
-                          <div className="space-y-2">
+                        <div className="space-y-3 pl-7 border-l-2 border-border/30 ml-2">
+                          <div className="space-y-1.5">
                             <Label
                               htmlFor={`model-${provider.id}`}
                               className="text-sm font-medium"
@@ -260,13 +260,13 @@ export function SettingsDialog({
                             </Select>
                           </div>
 
-                          <div className="space-y-2">
-                            <Label
-                              htmlFor={`api-key-${provider.id}`}
-                              className="text-sm font-medium"
-                            >
-                              API Key
-                            </Label>
+                           <div className="space-y-1.5">
+                             <Label
+                               htmlFor={`api-key-${provider.id}`}
+                               className="text-sm font-medium"
+                             >
+                               API Key
+                             </Label>
                             <div className="relative">
                               <Input
                                 id={`api-key-${provider.id}`}
@@ -299,29 +299,29 @@ export function SettingsDialog({
                   ))}
                 </div>
 
-                <div className="flex gap-3 mt-8">
-                  <Button className="flex-1 h-12 text-base font-medium">
-                    Save Provider Settings
-                  </Button>
-                </div>
+                 <div className="flex gap-3 mt-6">
+                   <Button className="flex-1 h-11 text-sm font-medium">
+                     Save Provider Settings
+                   </Button>
+                 </div>
               </div>
             )}
 
             {activeTab === "general" && (
-              <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 8rem)' }}>
-                <div className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 6rem)' }}>
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-1 tracking-tight">
                     General Settings
                   </h3>
-                  <p className="text-base text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Configure brand information and automation
                   </p>
                 </div>
 
-                <div className="space-y-8 mb-8">
-                  <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm">
-                    <div className="space-y-4">
-                      <div className="space-y-3">
+                <div className="space-y-6 mb-6">
+                  <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm">
+                    <div className="space-y-3">
+                      <div className="space-y-2">
                         <Label
                           htmlFor="brand-name"
                           className="text-base font-medium"
@@ -377,13 +377,13 @@ export function SettingsDialog({
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between pb-2">
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xl font-semibold">
+                      <h3 className="text-lg font-semibold">
                         Monitoring Prompts
                       </h3>
-                      <p className="text-base text-muted-foreground mt-1">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         Define prompts to track your brand presence across LLMs
                       </p>
                     </div>
@@ -396,7 +396,7 @@ export function SettingsDialog({
                     {prompts.map((prompt, index) => (
                       <div
                         key={prompt.id}
-                        className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 shadow-sm hover:shadow-md transition-all duration-200"
+                        className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-all duration-200"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 space-y-2">
@@ -425,10 +425,10 @@ export function SettingsDialog({
                     ))}
                   </div>
 
-                  <div className="rounded-2xl border-2 border-dashed border-border/50 bg-muted/20 p-6 space-y-4">
+                  <div className="rounded-xl border-2 border-dashed border-border/50 bg-muted/20 p-4 space-y-3">
                     <Label
                       htmlFor="new-prompt-label"
-                      className="text-base font-medium"
+                      className="text-sm font-medium"
                     >
                       Add New Prompt
                     </Label>
@@ -458,8 +458,8 @@ export function SettingsDialog({
                   </div>
                 </div>
 
-                <div className="flex gap-3 mt-8">
-                  <Button className="flex-1 h-12 text-base font-medium">
+                <div className="flex gap-3 mt-6">
+                  <Button className="flex-1 h-11 text-sm font-medium">
                     Save General Settings
                   </Button>
                 </div>

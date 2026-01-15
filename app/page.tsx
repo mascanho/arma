@@ -116,7 +116,7 @@ export default function Page() {
         onRemovePrompt={handleRemovePrompt}
       />
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 pt-20">
         <Tabs defaultValue="dashboard" className="space-y-6">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
