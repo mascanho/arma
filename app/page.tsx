@@ -74,6 +74,7 @@ export default function Page() {
   const [competitors, setCompetitors] = useState<LLM[]>(initialCompetitors)
   const [timeRange, setTimeRange] = useState("7d")
   const [prompts, setPrompts] = useState<MonitoringPrompt[]>(initialPrompts)
+  const [activeTab, setActiveTab] = useState("dashboard")
 
   const handleAddLLM = (name: string) => {
     const newLLM: LLM = {
@@ -116,40 +117,33 @@ export default function Page() {
         onRemovePrompt={handleRemovePrompt}
         llms={llms}
         onRemoveLLM={handleRemoveLLM}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
 
-      <main className="container mx-auto px-4 py-6 pt-20">
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="realtime" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Realtime Responses
-            </TabsTrigger>
-          </TabsList>
+      <main className="container mx-auto px-4 py-6 pt-24">
+        <div className="space-y-6">
+          {activeTab === "dashboard" && (
+            <>
+              <MetricsGrid llms={llms} />
 
-          <TabsContent value="dashboard" className="space-y-6">
-            <MetricsGrid llms={llms} />
+              <div className="grid gap-6 lg:grid-cols-2">
+                <SentimentChart llms={llms} timeRange={timeRange} />
+                <MentionsChart llms={llms} timeRange={timeRange} />
+              </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              <SentimentChart llms={llms} timeRange={timeRange} />
-              <MentionsChart llms={llms} timeRange={timeRange} />
-            </div>
+              <RankingsTable llms={llms} onRemoveLLM={handleRemoveLLM} />
 
-            <RankingsTable llms={llms} onRemoveLLM={handleRemoveLLM} />
+              <CompetitorRankingsTable competitors={competitors} />
 
-            <CompetitorRankingsTable competitors={competitors} />
+              <LLMResponses llms={llms} />
+            </>
+          )}
 
-            <LLMResponses llms={llms} />
-          </TabsContent>
-
-          <TabsContent value="realtime">
+          {activeTab === "realtime" && (
             <RealtimeChat llms={llms} prompts={prompts} />
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
       </main>
 
       <AddLLMDialog onAddLLM={handleAddLLM} />
