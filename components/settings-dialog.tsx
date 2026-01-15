@@ -144,7 +144,7 @@ export function SettingsDialog({
       <DialogContent className="max-w-full max-h-[90vh] p-0 overflow-hidden">
         <div className="flex h-full bg-background">
           {/* Sidebar */}
-          <div className="w-80 border-r border-border/50 bg-muted/10 backdrop-blur-sm">
+          <div className="w-96 border-r border-border/50 bg-muted/10 backdrop-blur-sm">
             <div className="p-8 border-b border-border/50">
               <DialogTitle className="text-xl font-semibold tracking-tight">
                 Settings
@@ -185,7 +185,7 @@ export function SettingsDialog({
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 w-225">
+          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 h-full">
             {activeTab === "llm" && (
               <div className="p-8">
                 <div className="mb-8">
