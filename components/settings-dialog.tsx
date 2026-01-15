@@ -1,39 +1,55 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Plus, Trash2, Eye, EyeOff } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
-import type { MonitoringPrompt } from "@/app/page"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Settings, Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import type { MonitoringPrompt } from "@/app/page";
 
 type LLMProvider = {
-  id: string
-  name: string
-  enabled: boolean
-  apiKey: string
-  showKey: boolean
-  models: string[]
-  selectedModel: string
-}
+  id: string;
+  name: string;
+  enabled: boolean;
+  apiKey: string;
+  showKey: boolean;
+  models: string[];
+  selectedModel: string;
+};
 
 type SettingsDialogProps = {
-  prompts: MonitoringPrompt[]
-  onAddPrompt: (label: string, prompt: string) => void
-  onRemovePrompt: (id: string) => void
-}
+  prompts: MonitoringPrompt[];
+  onAddPrompt: (label: string, prompt: string) => void;
+  onRemovePrompt: (id: string) => void;
+};
 
-export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: SettingsDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [newPromptLabel, setNewPromptLabel] = useState("")
-  const [newPromptText, setNewPromptText] = useState("")
-  const [automationInterval, setAutomationInterval] = useState("30")
-  const [brandName, setBrandName] = useState("")
-  const [activeTab, setActiveTab] = useState<"llm" | "general">("llm")
+export function SettingsDialog({
+  prompts,
+  onAddPrompt,
+  onRemovePrompt,
+}: SettingsDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [newPromptLabel, setNewPromptLabel] = useState("");
+  const [newPromptText, setNewPromptText] = useState("");
+  const [automationInterval, setAutomationInterval] = useState("30");
+  const [brandName, setBrandName] = useState("");
+  const [activeTab, setActiveTab] = useState<"llm" | "general">("llm");
 
   const [providers, setProviders] = useState<LLMProvider[]>([
     {
@@ -51,7 +67,12 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
       enabled: true,
       apiKey: "",
       showKey: false,
-      models: ["claude-3-5-sonnet", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+      models: [
+        "claude-3-5-sonnet",
+        "claude-3-opus",
+        "claude-3-sonnet",
+        "claude-3-haiku",
+      ],
       selectedModel: "claude-3-5-sonnet",
     },
     {
@@ -81,31 +102,37 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
       models: ["sonar-pro", "sonar", "sonar-reasoning"],
       selectedModel: "sonar-pro",
     },
-  ])
+  ]);
 
   const handleAddPrompt = () => {
     if (newPromptLabel.trim() && newPromptText.trim()) {
-      onAddPrompt(newPromptLabel.trim(), newPromptText.trim())
-      setNewPromptLabel("")
-      setNewPromptText("")
+      onAddPrompt(newPromptLabel.trim(), newPromptText.trim());
+      setNewPromptLabel("");
+      setNewPromptText("");
     }
-  }
+  };
 
   const toggleProvider = (id: string) => {
-    setProviders(providers.map((p) => (p.id === id ? { ...p, enabled: !p.enabled } : p)))
-  }
+    setProviders(
+      providers.map((p) => (p.id === id ? { ...p, enabled: !p.enabled } : p)),
+    );
+  };
 
   const updateApiKey = (id: string, apiKey: string) => {
-    setProviders(providers.map((p) => (p.id === id ? { ...p, apiKey } : p)))
-  }
+    setProviders(providers.map((p) => (p.id === id ? { ...p, apiKey } : p)));
+  };
 
   const toggleShowKey = (id: string) => {
-    setProviders(providers.map((p) => (p.id === id ? { ...p, showKey: !p.showKey } : p)))
-  }
+    setProviders(
+      providers.map((p) => (p.id === id ? { ...p, showKey: !p.showKey } : p)),
+    );
+  };
 
   const updateSelectedModel = (id: string, model: string) => {
-    setProviders(providers.map((p) => (p.id === id ? { ...p, selectedModel: model } : p)))
-  }
+    setProviders(
+      providers.map((p) => (p.id === id ? { ...p, selectedModel: model } : p)),
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -114,21 +141,25 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
           <Settings className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-full max-h-[90vh] p-0 overflow-hidden">
         <div className="flex h-full bg-background">
           {/* Sidebar */}
           <div className="w-80 border-r border-border/50 bg-muted/10 backdrop-blur-sm">
             <div className="p-8 border-b border-border/50">
-              <DialogTitle className="text-xl font-semibold tracking-tight">Settings</DialogTitle>
-              <DialogDescription className="text-sm mt-2 text-muted-foreground">Configure your monitoring system</DialogDescription>
+              <DialogTitle className="text-xl font-semibold tracking-tight">
+                Settings
+              </DialogTitle>
+              <DialogDescription className="text-sm mt-2 text-muted-foreground">
+                Configure your monitoring system
+              </DialogDescription>
             </div>
 
             <nav className="p-4 space-y-1">
               <button
                 onClick={() => setActiveTab("llm")}
                 className={`w-full text-left px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  activeTab === "llm" 
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]" 
+                  activeTab === "llm"
+                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -140,8 +171,8 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
               <button
                 onClick={() => setActiveTab("general")}
                 className={`w-full text-left px-5 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  activeTab === "general" 
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]" 
+                  activeTab === "general"
+                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
                     : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -154,17 +185,24 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20">
+          <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 w-225">
             {activeTab === "llm" && (
               <div className="p-8">
                 <div className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">LLM Providers</h3>
-                  <p className="text-base text-muted-foreground">Select providers, choose models, and enter API keys</p>
+                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">
+                    LLM Providers
+                  </h3>
+                  <p className="text-base text-muted-foreground">
+                    Select providers, choose models, and enter API keys
+                  </p>
                 </div>
 
                 <div className="space-y-6">
                   {providers.map((provider) => (
-                    <div key={provider.id} className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-all duration-200">
+                    <div
+                      key={provider.id}
+                      className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-all duration-200"
+                    >
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-4">
                           <Checkbox
@@ -173,14 +211,17 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                             onCheckedChange={() => toggleProvider(provider.id)}
                             className="w-5 h-5"
                           />
-                          <Label htmlFor={`provider-${provider.id}`} className="text-lg font-medium cursor-pointer">
+                          <Label
+                            htmlFor={`provider-${provider.id}`}
+                            className="text-lg font-medium cursor-pointer"
+                          >
                             {provider.name}
                           </Label>
                         </div>
                         <span
                           className={`text-sm px-3 py-1.5 rounded-full font-medium ${
-                            provider.enabled 
-                              ? "bg-green-500/10 text-green-600 border border-green-200/20" 
+                            provider.enabled
+                              ? "bg-green-500/10 text-green-600 border border-green-200/20"
                               : "bg-muted/50 text-muted-foreground border border-border/30"
                           }`}
                         >
@@ -191,14 +232,22 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                       {provider.enabled && (
                         <div className="space-y-4 pl-9 border-l-2 border-border/30 ml-2.5">
                           <div className="space-y-2">
-                            <Label htmlFor={`model-${provider.id}`} className="text-sm font-medium">
+                            <Label
+                              htmlFor={`model-${provider.id}`}
+                              className="text-sm font-medium"
+                            >
                               Model
                             </Label>
                             <Select
                               value={provider.selectedModel}
-                              onValueChange={(value) => updateSelectedModel(provider.id, value)}
+                              onValueChange={(value) =>
+                                updateSelectedModel(provider.id, value)
+                              }
                             >
-                              <SelectTrigger id={`model-${provider.id}`} className="h-11">
+                              <SelectTrigger
+                                id={`model-${provider.id}`}
+                                className="h-11"
+                              >
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -212,7 +261,10 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor={`api-key-${provider.id}`} className="text-sm font-medium">
+                            <Label
+                              htmlFor={`api-key-${provider.id}`}
+                              className="text-sm font-medium"
+                            >
                               API Key
                             </Label>
                             <div className="relative">
@@ -221,7 +273,9 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                                 type={provider.showKey ? "text" : "password"}
                                 placeholder="sk-..."
                                 value={provider.apiKey}
-                                onChange={(e) => updateApiKey(provider.id, e.target.value)}
+                                onChange={(e) =>
+                                  updateApiKey(provider.id, e.target.value)
+                                }
                                 className="pr-12 h-11"
                               />
                               <Button
@@ -231,7 +285,11 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                                 className="absolute right-1 top-1 h-9 w-9"
                                 onClick={() => toggleShowKey(provider.id)}
                               >
-                                {provider.showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                {provider.showKey ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
                               </Button>
                             </div>
                           </div>
@@ -242,7 +300,9 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                 </div>
 
                 <div className="flex gap-3 mt-8">
-                  <Button className="flex-1 h-12 text-base font-medium">Save Provider Settings</Button>
+                  <Button className="flex-1 h-12 text-base font-medium">
+                    Save Provider Settings
+                  </Button>
                 </div>
               </div>
             )}
@@ -250,15 +310,24 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
             {activeTab === "general" && (
               <div className="p-8">
                 <div className="mb-8">
-                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">General Settings</h3>
-                  <p className="text-base text-muted-foreground">Configure brand information and automation</p>
+                  <h3 className="text-2xl font-semibold mb-2 tracking-tight">
+                    General Settings
+                  </h3>
+                  <p className="text-base text-muted-foreground">
+                    Configure brand information and automation
+                  </p>
                 </div>
 
                 <div className="space-y-8 mb-8">
                   <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm">
                     <div className="space-y-4">
                       <div className="space-y-3">
-                        <Label htmlFor="brand-name" className="text-base font-medium">Brand Name</Label>
+                        <Label
+                          htmlFor="brand-name"
+                          className="text-base font-medium"
+                        >
+                          Brand Name
+                        </Label>
                         <Input
                           id="brand-name"
                           placeholder="Your brand or product name"
@@ -267,14 +336,26 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                           className="h-11"
                         />
                         <p className="text-sm text-muted-foreground">
-                          This will replace [Brand Name] in your monitoring prompts
+                          This will replace [Brand Name] in your monitoring
+                          prompts
                         </p>
                       </div>
 
                       <div className="space-y-3">
-                        <Label htmlFor="automation-interval" className="text-base font-medium">Automation Interval</Label>
-                        <Select value={automationInterval} onValueChange={setAutomationInterval}>
-                          <SelectTrigger id="automation-interval" className="h-11">
+                        <Label
+                          htmlFor="automation-interval"
+                          className="text-base font-medium"
+                        >
+                          Automation Interval
+                        </Label>
+                        <Select
+                          value={automationInterval}
+                          onValueChange={setAutomationInterval}
+                        >
+                          <SelectTrigger
+                            id="automation-interval"
+                            className="h-11"
+                          >
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -288,7 +369,8 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                           </SelectContent>
                         </Select>
                         <p className="text-sm text-muted-foreground">
-                          How often to automatically query LLMs with your prompts
+                          How often to automatically query LLMs with your
+                          prompts
                         </p>
                       </div>
                     </div>
@@ -298,7 +380,9 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                 <div className="space-y-6">
                   <div className="flex items-center justify-between pb-2">
                     <div>
-                      <h3 className="text-xl font-semibold">Monitoring Prompts</h3>
+                      <h3 className="text-xl font-semibold">
+                        Monitoring Prompts
+                      </h3>
                       <p className="text-base text-muted-foreground mt-1">
                         Define prompts to track your brand presence across LLMs
                       </p>
@@ -310,14 +394,23 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
 
                   <div className="space-y-4">
                     {prompts.map((prompt, index) => (
-                      <div key={prompt.id} className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 shadow-sm hover:shadow-md transition-all duration-200">
+                      <div
+                        key={prompt.id}
+                        className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 shadow-sm hover:shadow-md transition-all duration-200"
+                      >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-3">
-                              <span className="text-sm font-mono text-muted-foreground bg-muted/50 px-2 py-1 rounded">#{index + 1}</span>
-                              <span className="text-base font-medium">{prompt.label}</span>
+                              <span className="text-sm font-mono text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                                #{index + 1}
+                              </span>
+                              <span className="text-base font-medium">
+                                {prompt.label}
+                              </span>
                             </div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{prompt.prompt}</p>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {prompt.prompt}
+                            </p>
                           </div>
                           <Button
                             variant="ghost"
@@ -333,7 +426,10 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                   </div>
 
                   <div className="rounded-2xl border-2 border-dashed border-border/50 bg-muted/20 p-6 space-y-4">
-                    <Label htmlFor="new-prompt-label" className="text-base font-medium">
+                    <Label
+                      htmlFor="new-prompt-label"
+                      className="text-base font-medium"
+                    >
                       Add New Prompt
                     </Label>
                     <Input
@@ -351,9 +447,9 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                       rows={4}
                       className="resize-none"
                     />
-                    <Button 
-                      onClick={handleAddPrompt} 
-                      className="w-full h-12 text-base font-medium" 
+                    <Button
+                      onClick={handleAddPrompt}
+                      className="w-full h-12 text-base font-medium"
                       disabled={!newPromptLabel || !newPromptText}
                     >
                       <Plus className="mr-2 h-5 w-5" />
@@ -363,7 +459,9 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
                 </div>
 
                 <div className="flex gap-3 mt-8">
-                  <Button className="flex-1 h-12 text-base font-medium">Save General Settings</Button>
+                  <Button className="flex-1 h-12 text-base font-medium">
+                    Save General Settings
+                  </Button>
                 </div>
               </div>
             )}
@@ -371,5 +469,5 @@ export function SettingsDialog({ prompts, onAddPrompt, onRemovePrompt }: Setting
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
