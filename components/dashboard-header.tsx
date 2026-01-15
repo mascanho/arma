@@ -1,7 +1,7 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bot, Calendar, BarChart3, MessageSquare } from "lucide-react"
+import { Bot, Calendar, BarChart3, MessageSquare, Eye } from "lucide-react"
 import { SettingsDialog } from "@/components/settings-dialog"
 import type { MonitoringPrompt, LLM } from "@/app/page"
 
@@ -46,14 +46,18 @@ export function DashboardHeader({
           {/* Center Section: Navigation Tabs */}
           <div className="hidden md:flex">
             <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                <TabsTrigger value="dashboard" className="flex items-center gap-2 px-4 py-2 text-sm">
+              <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+                <TabsTrigger value="dashboard" className="flex items-center gap-2 px-3 py-2 text-xs">
                   <BarChart3 className="h-4 w-4" />
-                  <span className="hidden lg:inline">Dashboard</span>
+                  <span className="hidden xl:inline">Dashboard</span>
                 </TabsTrigger>
-                <TabsTrigger value="realtime" className="flex items-center gap-2 px-4 py-2 text-sm">
+                <TabsTrigger value="realtime" className="flex items-center gap-2 px-3 py-2 text-xs">
                   <MessageSquare className="h-4 w-4" />
-                  <span className="hidden lg:inline">Realtime</span>
+                  <span className="hidden xl:inline">Realtime</span>
+                </TabsTrigger>
+                <TabsTrigger value="prompts" className="flex items-center gap-2 px-3 py-2 text-xs">
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden xl:inline">Prompts</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -80,14 +84,18 @@ export function DashboardHeader({
         {/* Mobile Tabs - Show below main header on small screens */}
         <div className="md:hidden mt-4">
           <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-              <TabsTrigger value="dashboard" className="flex items-center gap-2 px-4 py-2 text-sm">
+            <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2 px-3 py-2 text-sm">
                 <BarChart3 className="h-4 w-4" />
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="realtime" className="flex items-center gap-2 px-4 py-2 text-sm">
+              <TabsTrigger value="realtime" className="flex items-center gap-2 px-3 py-2 text-sm">
                 <MessageSquare className="h-4 w-4" />
                 Realtime
+              </TabsTrigger>
+              <TabsTrigger value="prompts" className="flex items-center gap-2 px-3 py-2 text-sm">
+                <Eye className="h-4 w-4" />
+                Prompts
               </TabsTrigger>
             </TabsList>
           </Tabs>

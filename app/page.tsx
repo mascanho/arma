@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { MetricsGrid } from "@/components/metrics-grid"
+import { GrowthChart } from "@/components/growth-chart"
+import { PromptVisualization } from "@/components/prompt-visualization"
 import { SentimentChart } from "@/components/sentiment-chart"
 import { MentionsChart } from "@/components/mentions-chart"
 import { RankingsTable } from "@/components/rankings-table"
@@ -125,7 +126,7 @@ export default function Page() {
         <div className="space-y-6">
           {activeTab === "dashboard" && (
             <>
-              <MetricsGrid llms={llms} />
+              <GrowthChart llms={llms} competitors={competitors} />
 
               <div className="grid gap-6 lg:grid-cols-2">
                 <SentimentChart llms={llms} timeRange={timeRange} />
@@ -142,6 +143,10 @@ export default function Page() {
 
           {activeTab === "realtime" && (
             <RealtimeChat llms={llms} prompts={prompts} />
+          )}
+
+          {activeTab === "prompts" && (
+            <PromptVisualization prompts={prompts} llms={llms} competitors={competitors} />
           )}
         </div>
       </main>
