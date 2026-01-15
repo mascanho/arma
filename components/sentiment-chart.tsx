@@ -29,8 +29,8 @@ export function SentimentChart({ llms, timeRange }: SentimentChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data}>
-            <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+             <XAxis dataKey="day" stroke="#94a3b8" fontSize={12} />
+             <YAxis stroke="#94a3b8" fontSize={12} />
             <Tooltip
               contentStyle={{
                 backgroundColor: "hsl(var(--popover))",

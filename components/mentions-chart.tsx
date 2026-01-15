@@ -24,8 +24,8 @@ export function MentionsChart({ llms, timeRange }: MentionsChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
-            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+             <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
+             <YAxis stroke="#94a3b8" fontSize={12} />
             <Tooltip
               contentStyle={{
                 backgroundColor: "hsl(var(--popover))",
