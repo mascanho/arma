@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,9 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Settings, Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Settings, Plus, Trash2, Eye, EyeOff, X } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { MonitoringPrompt } from "@/app/page";
+import type { MonitoringPrompt, LLM } from "@/app/page";
 
 type LLMProvider = {
   id: string;
@@ -37,12 +37,16 @@ type SettingsDialogProps = {
   prompts: MonitoringPrompt[];
   onAddPrompt: (label: string, prompt: string) => void;
   onRemovePrompt: (id: string) => void;
+  llms: LLM[];
+  onRemoveLLM: (id: string) => void;
 };
 
 export function SettingsDialog({
   prompts,
   onAddPrompt,
   onRemovePrompt,
+  llms,
+  onRemoveLLM,
 }: SettingsDialogProps) {
   const [open, setOpen] = useState(false);
   const [newPromptLabel, setNewPromptLabel] = useState("");
@@ -51,58 +55,66 @@ export function SettingsDialog({
   const [brandName, setBrandName] = useState("");
   const [activeTab, setActiveTab] = useState<"llm" | "general">("llm");
 
-  const [providers, setProviders] = useState<LLMProvider[]>([
-    {
-      id: "1",
-      name: "OpenAI",
-      enabled: true,
+  // Initialize providers from LLMs, with default settings for known providers
+  const getDefaultProviderSettings = (llm: LLM): LLMProvider => {
+    const defaultSettings: Record<string, Partial<LLMProvider>> = {
+      "OpenAI": {
+        models: ["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+        selectedModel: "gpt-4o",
+      },
+      "Claude": {
+        models: ["claude-3-5-sonnet", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+        selectedModel: "claude-3-5-sonnet",
+      },
+      "Google": {
+        models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+        selectedModel: "gemini-2.0-flash",
+      },
+      "xAI": {
+        models: ["grok-2", "grok-2-mini"],
+        selectedModel: "grok-2",
+      },
+      "Perplexity": {
+        models: ["sonar-pro", "sonar", "sonar-reasoning"],
+        selectedModel: "sonar-pro",
+      },
+    };
+
+    const settings = defaultSettings[llm.name] || {
+      models: ["default-model"],
+      selectedModel: "default-model",
+    };
+
+    return {
+      id: llm.id,
+      name: llm.name,
+      enabled: true, // New LLMs are enabled by default
       apiKey: "",
       showKey: false,
-      models: ["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
-      selectedModel: "gpt-4o",
-    },
-    {
-      id: "2",
-      name: "Anthropic",
-      enabled: true,
-      apiKey: "",
-      showKey: false,
-      models: [
-        "claude-3-5-sonnet",
-        "claude-3-opus",
-        "claude-3-sonnet",
-        "claude-3-haiku",
-      ],
-      selectedModel: "claude-3-5-sonnet",
-    },
-    {
-      id: "3",
-      name: "Google",
-      enabled: false,
-      apiKey: "",
-      showKey: false,
-      models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
-      selectedModel: "gemini-2.0-flash",
-    },
-    {
-      id: "4",
-      name: "xAI",
-      enabled: false,
-      apiKey: "",
-      showKey: false,
-      models: ["grok-2", "grok-2-mini"],
-      selectedModel: "grok-2",
-    },
-    {
-      id: "5",
-      name: "Perplexity",
-      enabled: false,
-      apiKey: "",
-      showKey: false,
-      models: ["sonar-pro", "sonar", "sonar-reasoning"],
-      selectedModel: "sonar-pro",
-    },
-  ]);
+      models: settings.models || ["default-model"],
+      selectedModel: settings.selectedModel || "default-model",
+    };
+  };
+
+  const [providers, setProviders] = useState<LLMProvider[]>([]);
+
+  // Initialize and sync providers with LLMs
+  useEffect(() => {
+    const llmIds = new Set(llms.map(llm => llm.id));
+    const currentIds = new Set(providers.map(p => p.id));
+
+    // Remove providers that no longer have corresponding LLMs
+    const filteredProviders = providers.filter(p => llmIds.has(p.id));
+
+    // Add new providers for LLMs that don't have them
+    const newProviders = llms
+      .filter(llm => !currentIds.has(llm.id))
+      .map(getDefaultProviderSettings);
+
+    if (filteredProviders.length !== providers.length || newProviders.length > 0) {
+      setProviders([...filteredProviders, ...newProviders]);
+    }
+  }, [llms]);;
 
   const handleAddPrompt = () => {
     if (newPromptLabel.trim() && newPromptText.trim()) {
@@ -218,15 +230,25 @@ export function SettingsDialog({
                             {provider.name}
                           </Label>
                         </div>
-                        <span
-                          className={`text-sm px-3 py-1.5 rounded-full font-medium ${
-                            provider.enabled
-                              ? "bg-green-500/10 text-green-600 border border-green-200/20"
-                              : "bg-muted/50 text-muted-foreground border border-border/30"
-                          }`}
-                        >
-                          {provider.enabled ? "Enabled" : "Disabled"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-sm px-3 py-1.5 rounded-full font-medium ${
+                              provider.enabled
+                                ? "bg-green-500/10 text-green-600 border border-green-200/20"
+                                : "bg-muted/50 text-muted-foreground border border-border/30"
+                            }`}
+                          >
+                            {provider.enabled ? "Enabled" : "Disabled"}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => onRemoveLLM(provider.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
 
                       {provider.enabled && (

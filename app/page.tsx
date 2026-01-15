@@ -114,6 +114,8 @@ export default function Page() {
         prompts={prompts}
         onAddPrompt={handleAddPrompt}
         onRemovePrompt={handleRemovePrompt}
+        llms={llms}
+        onRemoveLLM={handleRemoveLLM}
       />
 
       <main className="container mx-auto px-4 py-6 pt-20">
