@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { DashboardHeader } from "@/components/dashboard-header"
+import { NavigationSidebar } from "@/components/navigation-sidebar"
 import { GrowthChart } from "@/components/growth-chart"
 import { PromptVisualization } from "@/components/prompt-visualization"
 import { SentimentChart } from "@/components/sentiment-chart"
@@ -11,8 +11,10 @@ import { CompetitorRankingsTable } from "@/components/competitor-rankings-table"
 import { LLMResponses } from "@/components/llm-responses"
 import { AddLLMDialog } from "@/components/add-llm-dialog"
 import { RealtimeChat } from "@/components/realtime-chat"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BarChart3, MessageSquare } from "lucide-react"
+import { CitationsTable } from "@/components/citations-table"
+import { PromptsContent } from "@/components/prompts-content"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { DashboardHeader } from "@/components/dashboard-header"
 
 export type LLM = {
   id: string
@@ -109,49 +111,64 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <DashboardHeader
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
-        prompts={prompts}
-        onAddPrompt={handleAddPrompt}
-        onRemovePrompt={handleRemovePrompt}
-        llms={llms}
-        onRemoveLLM={handleRemoveLLM}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full bg-background">
+        <NavigationSidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="container mx-auto px-4 py-6 pt-24">
-        <div className="space-y-6">
-          {activeTab === "dashboard" && (
-            <>
-              <GrowthChart llms={llms} competitors={competitors} />
+        <SidebarInset className="flex-1">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center gap-2 ml-auto">
+              <DashboardHeader
+                timeRange={timeRange}
+                onTimeRangeChange={setTimeRange}
+                prompts={prompts}
+                onAddPrompt={handleAddPrompt}
+                onRemovePrompt={handleRemovePrompt}
+                llms={llms}
+                onRemoveLLM={handleRemoveLLM}
+              />
+            </div>
+          </header>
 
-              <div className="grid gap-6 lg:grid-cols-2">
-                <SentimentChart llms={llms} timeRange={timeRange} />
-                <MentionsChart llms={llms} timeRange={timeRange} />
-              </div>
+          <main className="flex-1 px-6 py-6">
+            <div className="space-y-6 max-w-none h-full">
+              {activeTab === "dashboard" && (
+                <>
+                  <GrowthChart llms={llms} competitors={competitors} />
 
-              <RankingsTable llms={llms} onRemoveLLM={handleRemoveLLM} />
+                  <div className="grid gap-6 lg:grid-cols-2">
+                    <SentimentChart llms={llms} timeRange={timeRange} />
+                    <MentionsChart llms={llms} timeRange={timeRange} />
+                  </div>
 
-              <CompetitorRankingsTable competitors={competitors} />
+                  <RankingsTable llms={llms} onRemoveLLM={handleRemoveLLM} />
 
-              <LLMResponses llms={llms} />
-            </>
-          )}
+                  <CompetitorRankingsTable competitors={competitors} />
 
-          {activeTab === "realtime" && (
-            <RealtimeChat llms={llms} prompts={prompts} />
-          )}
+                  <LLMResponses llms={llms} />
+                </>
+              )}
 
-          {activeTab === "prompts" && (
-            <PromptVisualization prompts={prompts} llms={llms} competitors={competitors} />
-          )}
-        </div>
-      </main>
+              {activeTab === "realtime" && (
+                <RealtimeChat llms={llms} prompts={prompts} />
+              )}
 
-      <AddLLMDialog onAddLLM={handleAddLLM} />
-    </div>
+              {activeTab === "prompts" && (
+                <PromptsContent prompts={prompts} llms={llms} competitors={competitors} />
+              )}
+
+              {activeTab === "citations" && (
+                <div className="h-full">
+                  <CitationsTable />
+                </div>
+              )}
+            </div>
+          </main>
+
+          <AddLLMDialog onAddLLM={handleAddLLM} />
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   )
 }
