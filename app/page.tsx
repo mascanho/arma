@@ -36,6 +36,15 @@ export type MonitoringPrompt = {
   creationDate: string
 }
 
+export type LLMProviderConfig = {
+  id: string;
+  name: string;
+  enabled: boolean;
+  apiKey: string;
+  models: string[];
+  selectedModel: string;
+};
+
 const initialLLMs: LLM[] = [
   { id: "1", name: "ChatGPT", sentiment: 85, mentions: 12458, rank: 1, change: 0, responseTime: 850, accuracy: 94 },
   { id: "2", name: "Claude", sentiment: 82, mentions: 9234, rank: 2, change: 1, responseTime: 720, accuracy: 92 },
@@ -87,11 +96,39 @@ const initialPrompts: MonitoringPrompt[] = [
   },
 ]
 
+const initialProviders: LLMProviderConfig[] = [
+  {
+    id: "1",
+    name: "OpenAI",
+    enabled: true,
+    apiKey: "",
+    models: ["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+    selectedModel: "gpt-4o",
+  },
+  {
+    id: "2",
+    name: "Claude",
+    enabled: true,
+    apiKey: "",
+    models: ["claude-3-5-sonnet", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+    selectedModel: "claude-3-5-sonnet",
+  },
+  {
+    id: "3",
+    name: "Google",
+    enabled: true,
+    apiKey: "",
+    models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+    selectedModel: "gemini-2.0-flash",
+  },
+]
+
 export default function Page() {
   const [llms, setLLMs] = useState<LLM[]>(initialLLMs)
   const [competitors, setCompetitors] = useState<LLM[]>(initialCompetitors)
   const [timeRange, setTimeRange] = useState("7d")
   const [prompts, setPrompts] = useState<MonitoringPrompt[]>(initialPrompts)
+  const [providers, setProviders] = useState<LLMProviderConfig[]>(initialProviders)
   const [activeTab, setActiveTab] = useState("dashboard")
 
   const handleAddLLM = (name: string) => {
