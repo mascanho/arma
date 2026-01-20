@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Pagination,
   PaginationContent,
@@ -64,7 +65,7 @@ const samplePrompts: PromptData[] = [
   // Add more sample data
 ]
 
-for (let i = 4; i <= 100; i++) {
+for (let i = 4; i <= 500; i++) {
   samplePrompts.push({
     prompt: `Sample prompt ${i}`,
     country: ["US", "UK", "Germany", "France", "Japan"][Math.floor(Math.random() * 5)],
@@ -82,7 +83,7 @@ for (let i = 4; i <= 100; i++) {
 export function PromptsTable() {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 100
+  const itemsPerPage = 1000
 
   const filteredPrompts = samplePrompts.filter((prompt) =>
     prompt.prompt.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -99,7 +100,7 @@ export function PromptsTable() {
   }
 
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex flex-col space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Prompts Table</h2>
         <Input
@@ -109,8 +110,8 @@ export function PromptsTable() {
           className="max-w-sm"
         />
       </div>
-      <div className="flex-1 rounded-md border overflow-hidden">
-        <div className="overflow-auto h-full">
+      <div className="rounded-md border">
+        <ScrollArea style={{ maxHeight: 'calc(100vh - 200px)' }}>
           <table className="w-full">
             <thead>
               <tr className="border-b bg-muted/50">
@@ -143,7 +144,7 @@ export function PromptsTable() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       </div>
       <Pagination>
         <PaginationContent>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Pagination,
   PaginationContent,
@@ -22,7 +23,7 @@ interface CitationsDataTableProps {
 
 export function CitationsDataTable({ citations }: CitationsDataTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 100
+  const itemsPerPage = 1000
 
   const totalPages = Math.ceil(citations.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -34,8 +35,8 @@ export function CitationsDataTable({ citations }: CitationsDataTableProps) {
 
   return (
     <>
-      <div className="flex-1 rounded-md border overflow-hidden">
-        <div className="overflow-auto h-full">
+      <div className="rounded-md border">
+        <ScrollArea style={{ maxHeight: 'calc(100vh - 200px)' }}>
           <table className="w-full">
             <thead>
               <tr className="border-b bg-muted/50">
@@ -54,7 +55,7 @@ export function CitationsDataTable({ citations }: CitationsDataTableProps) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       </div>
       <Pagination>
         <PaginationContent>

@@ -135,7 +135,7 @@ export function CitationsTable() {
   )
 
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex flex-col space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Citations</h2>
         <Input
