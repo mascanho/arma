@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ScrollArea } from "@/components/ui/scroll-area"
+
 import {
   Pagination,
   PaginationContent,
@@ -35,14 +35,14 @@ export function CitationsDataTable({ citations }: CitationsDataTableProps) {
 
   return (
     <>
-      <div className="rounded-md border">
-        <ScrollArea style={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <table className="w-full">
-            <thead>
+      <div className="rounded-md border overflow-hidden">
+        <div className="overflow-auto h-[calc(100vh-250px)]">
+          <table className="w-full border-separate border-spacing-0">
+            <thead className="sticky top-0 z-10">
               <tr className="border-b bg-muted/50">
-                <th className="h-12 px-4 text-left align-middle font-medium">Domain</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Total Citations</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Position</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Domain</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Total Citations</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Position</th>
               </tr>
             </thead>
             <tbody>
@@ -55,7 +55,7 @@ export function CitationsDataTable({ citations }: CitationsDataTableProps) {
               ))}
             </tbody>
           </table>
-        </ScrollArea>
+        </div>
       </div>
       <Pagination>
         <PaginationContent>

@@ -45,13 +45,13 @@ export function NavigationSidebar({ activeTab, onTabChange }: NavigationSidebarP
   return (
     <Sidebar collapsible="icon" className="bg-background border-r border-border">
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+        <div className="flex items-center gap-2 px-2 py-2 overflow-hidden">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary">
             <Bot className="h-5 w-5 text-primary-foreground" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">LLM Brand Monitor</span>
-            <span className="text-xs text-muted-foreground">Real-time tracking</span>
+          <div className="flex flex-col min-w-0 transition-opacity duration-200 group-data-[collapsible=icon]:opacity-0">
+            <span className="text-sm font-semibold whitespace-nowrap truncate">LLM Brand Monitor</span>
+            <span className="text-xs text-muted-foreground whitespace-nowrap truncate">Real-time tracking</span>
           </div>
         </div>
       </SidebarHeader>
@@ -78,7 +78,7 @@ export function NavigationSidebar({ activeTab, onTabChange }: NavigationSidebarP
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="p-2 text-xs text-muted-foreground">
+        <div className="p-2 text-xs text-muted-foreground transition-opacity duration-200 group-data-[collapsible=icon]:opacity-0 overflow-hidden whitespace-nowrap">
           v1.0.0
         </div>
       </SidebarFooter>

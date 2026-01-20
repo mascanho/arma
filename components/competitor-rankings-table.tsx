@@ -19,17 +19,17 @@ export function CompetitorRankingsTable({ competitors }: CompetitorRankingsTable
         <p className="text-sm text-muted-foreground">Market position comparison with competitors</p>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
+        <div className="overflow-auto h-[400px]">
+          <table className="w-full border-separate border-spacing-0">
+            <thead className="sticky top-0 z-10">
               <tr className="border-b border-border">
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Rank</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Competitor</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Sentiment</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Mentions</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Response Time</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Accuracy</th>
-                <th className="pb-3 text-left text-sm font-medium text-muted-foreground">Change</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Rank</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Competitor</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Sentiment</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Mentions</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Response Time</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Accuracy</th>
+                <th className="pb-3 text-left text-sm font-medium text-muted-foreground bg-card sticky top-0 border-b border-border">Change</th>
               </tr>
             </thead>
             <tbody>

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
+
 import {
   Pagination,
   PaginationContent,
@@ -110,21 +110,21 @@ export function PromptsTable() {
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
-        <ScrollArea style={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <table className="w-full">
-            <thead>
+      <div className="rounded-md border overflow-hidden">
+        <div className="overflow-auto h-[calc(100vh-250px)]">
+          <table className="w-full border-separate border-spacing-0">
+            <thead className="sticky top-0 z-10">
               <tr className="border-b bg-muted/50">
-                <th className="h-12 px-4 text-left align-middle font-medium">Prompt</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Country</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Language</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Responses</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Mentions</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Visibility</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Citations</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Position</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Last Update</th>
-                <th className="h-12 px-4 text-left align-middle font-medium">Creation Date</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Prompt</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Country</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Language</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Responses</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Mentions</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Visibility</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Citations</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Position</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Last Update</th>
+                <th className="h-12 px-4 text-left align-middle font-medium bg-muted sticky top-0 border-b">Creation Date</th>
               </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@ export function PromptsTable() {
               ))}
             </tbody>
           </table>
-        </ScrollArea>
+        </div>
       </div>
       <Pagination>
         <PaginationContent>

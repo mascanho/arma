@@ -35,7 +35,7 @@ type LLMProvider = {
 
 type SettingsDialogProps = {
   prompts: MonitoringPrompt[];
-  onAddPrompt: (label: string, prompt: string) => void;
+  onAddPrompt: (label: string, prompt: string, country: string, language: string) => void;
   onRemovePrompt: (id: string) => void;
   llms: LLM[];
   onRemoveLLM: (id: string) => void;
@@ -51,9 +51,11 @@ export function SettingsDialog({
   const [open, setOpen] = useState(false);
   const [newPromptLabel, setNewPromptLabel] = useState("");
   const [newPromptText, setNewPromptText] = useState("");
-  const [automationInterval, setAutomationInterval] = useState("30");
+  const [newPromptCountry, setNewPromptCountry] = useState("US");
+  const [newPromptLanguage, setNewPromptLanguage] = useState("English");
+  const [automationInterval, setAutomationInterval] = useState("1440");
   const [brandName, setBrandName] = useState("");
-  const [activeTab, setActiveTab] = useState<"llm" | "general">("llm");
+  const [activeTab, setActiveTab] = useState<"llm" | "general" | "prompts">("llm");
 
   // Initialize providers from LLMs, with default settings for known providers
   const getDefaultProviderSettings = (llm: LLM): LLMProvider => {
@@ -118,7 +120,7 @@ export function SettingsDialog({
 
   const handleAddPrompt = () => {
     if (newPromptLabel.trim() && newPromptText.trim()) {
-      onAddPrompt(newPromptLabel.trim(), newPromptText.trim());
+      onAddPrompt(newPromptLabel.trim(), newPromptText.trim(), newPromptCountry, newPromptLanguage);
       setNewPromptLabel("");
       setNewPromptText("");
     }
@@ -169,11 +171,10 @@ export function SettingsDialog({
             <nav className="p-3 space-y-1">
               <button
                 onClick={() => setActiveTab("llm")}
-                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === "llm"
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
-                    : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                }`}
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === "llm"
+                  ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
+                  : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
@@ -182,15 +183,26 @@ export function SettingsDialog({
               </button>
               <button
                 onClick={() => setActiveTab("general")}
-                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === "general"
-                    ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
-                    : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                }`}
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === "general"
+                  ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
+                  : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
                   General
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab("prompts")}
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === "prompts"
+                  ? "bg-primary text-primary-foreground shadow-sm scale-[1.01]"
+                  : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-current opacity-60"></div>
+                  Monitored Prompts
                 </div>
               </button>
             </nav>
@@ -232,11 +244,10 @@ export function SettingsDialog({
                         </div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-sm px-3 py-1.5 rounded-full font-medium ${
-                              provider.enabled
-                                ? "bg-green-500/10 text-green-600 border border-green-200/20"
-                                : "bg-muted/50 text-muted-foreground border border-border/30"
-                            }`}
+                            className={`text-sm px-3 py-1.5 rounded-full font-medium ${provider.enabled
+                              ? "bg-green-500/10 text-green-600 border border-green-200/20"
+                              : "bg-muted/50 text-muted-foreground border border-border/30"
+                              }`}
                           >
                             {provider.enabled ? "Enabled" : "Disabled"}
                           </span>
@@ -282,13 +293,13 @@ export function SettingsDialog({
                             </Select>
                           </div>
 
-                           <div className="space-y-1.5">
-                             <Label
-                               htmlFor={`api-key-${provider.id}`}
-                               className="text-sm font-medium"
-                             >
-                               API Key
-                             </Label>
+                          <div className="space-y-1.5">
+                            <Label
+                              htmlFor={`api-key-${provider.id}`}
+                              className="text-sm font-medium"
+                            >
+                              API Key
+                            </Label>
                             <div className="relative">
                               <Input
                                 id={`api-key-${provider.id}`}
@@ -321,11 +332,11 @@ export function SettingsDialog({
                   ))}
                 </div>
 
-                 <div className="flex gap-3 mt-6">
-                   <Button className="flex-1 h-11 text-sm font-medium">
-                     Save Provider Settings
-                   </Button>
-                 </div>
+                <div className="flex gap-3 mt-6">
+                  <Button className="flex-1 h-11 text-sm font-medium">
+                    Save Provider Settings
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -399,87 +410,6 @@ export function SettingsDialog({
                   </div>
                 </div>
 
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        Monitoring Prompts
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        Define prompts to track your brand presence across LLMs
-                      </p>
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
-                      {prompts.length} prompts
-                    </span>
-                  </div>
-
-                  <div className="space-y-4">
-                    {prompts.map((prompt, index) => (
-                      <div
-                        key={prompt.id}
-                        className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-all duration-200"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm font-mono text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                                #{index + 1}
-                              </span>
-                              <span className="text-base font-medium">
-                                {prompt.label}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {prompt.prompt}
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-9 w-9 shrink-0 hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => onRemovePrompt(prompt.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="rounded-xl border-2 border-dashed border-border/50 bg-muted/20 p-4 space-y-3">
-                    <Label
-                      htmlFor="new-prompt-label"
-                      className="text-sm font-medium"
-                    >
-                      Add New Prompt
-                    </Label>
-                    <Input
-                      id="new-prompt-label"
-                      placeholder="Prompt label (e.g., Brand Awareness)"
-                      value={newPromptLabel}
-                      onChange={(e) => setNewPromptLabel(e.target.value)}
-                      className="h-11"
-                    />
-                    <Textarea
-                      id="new-prompt-text"
-                      placeholder="Enter your monitoring prompt... Use [Brand Name] as a placeholder"
-                      value={newPromptText}
-                      onChange={(e) => setNewPromptText(e.target.value)}
-                      rows={4}
-                      className="resize-none"
-                    />
-                    <Button
-                      onClick={handleAddPrompt}
-                      className="w-full h-12 text-base font-medium"
-                      disabled={!newPromptLabel || !newPromptText}
-                    >
-                      <Plus className="mr-2 h-5 w-5" />
-                      Add Prompt
-                    </Button>
-                  </div>
-                </div>
-
                 <div className="flex gap-3 mt-6">
                   <Button className="flex-1 h-11 text-sm font-medium">
                     Save General Settings
@@ -487,9 +417,129 @@ export function SettingsDialog({
                 </div>
               </div>
             )}
+            {activeTab === "prompts" && (
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 6rem)' }}>
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-1 tracking-tight">
+                    Monitored Prompts
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Manage the prompts and regions you want to monitor
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 shadow-sm">
+                    <h4 className="text-base font-medium mb-4">Add New Monitoring Prompt</h4>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="prompt-label">Label</Label>
+                        <Input
+                          id="prompt-label"
+                          placeholder="e.g., Brand Awareness"
+                          value={newPromptLabel}
+                          onChange={(e) => setNewPromptLabel(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="prompt-text">Prompt</Label>
+                        <Textarea
+                          id="prompt-text"
+                          placeholder="e.g., What do you know about [Brand Name]?"
+                          value={newPromptText}
+                          onChange={(e) => setNewPromptText(e.target.value)}
+                          className="min-h-[100px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="prompt-country">Country</Label>
+                        <Select value={newPromptCountry} onValueChange={setNewPromptCountry}>
+                          <SelectTrigger id="prompt-country">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="US">United States</SelectItem>
+                            <SelectItem value="UK">United Kingdom</SelectItem>
+                            <SelectItem value="Spain">Spain</SelectItem>
+                            <SelectItem value="France">France</SelectItem>
+                            <SelectItem value="Germany">Germany</SelectItem>
+                            <SelectItem value="Japan">Japan</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="prompt-language">Language</Label>
+                        <Select value={newPromptLanguage} onValueChange={setNewPromptLanguage}>
+                          <SelectTrigger id="prompt-language">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="English">English</SelectItem>
+                            <SelectItem value="Spanish">Spanish</SelectItem>
+                            <SelectItem value="French">French</SelectItem>
+                            <SelectItem value="German">German</SelectItem>
+                            <SelectItem value="Japanese">Japanese</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handleAddPrompt}
+                      className="w-full mt-6 h-11"
+                      disabled={!newPromptLabel || !newPromptText}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Prompt
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-base font-medium">Currently Monitored</h4>
+                    {prompts.length === 0 ? (
+                      <div className="text-center py-12 border-2 border-dashed border-border/50 rounded-xl bg-muted/20">
+                        <p className="text-muted-foreground">No prompts defined yet</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {prompts.map((p) => (
+                          <div
+                            key={p.id}
+                            className="flex items-start justify-between p-4 rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-sm"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{p.label}</span>
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-mono uppercase">
+                                  {p.country} / {p.language}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {p.prompt}
+                              </p>
+                              <div className="text-[10px] text-muted-foreground pt-1 flex items-center gap-2">
+                                <span>Created: {p.creationDate}</span>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => onRemovePrompt(p.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 }

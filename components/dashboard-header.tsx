@@ -8,7 +8,7 @@ type DashboardHeaderProps = {
   timeRange: string;
   onTimeRangeChange: (value: string) => void;
   prompts: MonitoringPrompt[];
-  onAddPrompt: (label: string, prompt: string) => void;
+  onAddPrompt: (label: string, prompt: string, country: string, language: string) => void;
   onRemovePrompt: (id: string) => void;
   llms: LLM[];
   onRemoveLLM: (id: string) => void;

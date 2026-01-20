@@ -31,6 +31,9 @@ export type MonitoringPrompt = {
   id: string
   label: string
   prompt: string
+  country: string
+  language: string
+  creationDate: string
 }
 
 const initialLLMs: LLM[] = [
@@ -54,21 +57,33 @@ const initialPrompts: MonitoringPrompt[] = [
     id: "1",
     label: "Brand Awareness",
     prompt: "What do you know about [Brand Name]? Can you tell me about their products and reputation?",
+    country: "US",
+    language: "English",
+    creationDate: "2024-01-01",
   },
   {
     id: "2",
     label: "Feature Comparison",
     prompt: "Compare the key features and capabilities of [Brand Name] with its main competitors.",
+    country: "UK",
+    language: "English",
+    creationDate: "2024-01-05",
   },
   {
     id: "3",
     label: "User Sentiment",
     prompt: "What do users typically say about [Brand Name]? What are the main pros and cons?",
+    country: "Spain",
+    language: "Spanish",
+    creationDate: "2024-01-10",
   },
   {
     id: "4",
     label: "Market Position",
     prompt: "Where does [Brand Name] stand in the market compared to other similar products?",
+    country: "France",
+    language: "French",
+    creationDate: "2024-01-15",
   },
 ]
 
@@ -97,11 +112,14 @@ export default function Page() {
     setLLMs(llms.filter((llm) => llm.id !== id))
   }
 
-  const handleAddPrompt = (label: string, prompt: string) => {
+  const handleAddPrompt = (label: string, prompt: string, country: string, language: string) => {
     const newPrompt: MonitoringPrompt = {
       id: Date.now().toString(),
       label,
       prompt,
+      country,
+      language,
+      creationDate: new Date().toISOString().split('T')[0],
     }
     setPrompts([...prompts, newPrompt])
   }
