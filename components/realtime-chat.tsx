@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Bot, Send, User, Loader2, MessageSquare } from "lucide-react"
-import type { LLM, MonitoringPrompt } from "@/app/page"
+import type { LLM, MonitoringPrompt, LLMProviderConfig } from "@/app/page"
 
 type Message = {
   id: string
@@ -21,9 +21,10 @@ type Message = {
 type RealtimeChatProps = {
   llms: LLM[]
   prompts: MonitoringPrompt[]
+  providers: LLMProviderConfig[]
 }
 
-export function RealtimeChat({ llms, prompts }: RealtimeChatProps) {
+export function RealtimeChat({ llms, prompts, providers }: RealtimeChatProps) {
   const [selectedLLM, setSelectedLLM] = useState<string>(llms[0]?.id || "")
   const [selectedPrompt, setSelectedPrompt] = useState<string>("")
   const [messages, setMessages] = useState<Message[]>([])
@@ -160,11 +161,29 @@ export function RealtimeChat({ llms, prompts }: RealtimeChatProps) {
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm">
               <Bot className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Active Model:</span>
+              <span className="text-muted-foreground">Provider Status:</span>
             </div>
-            <div className="p-4 bg-muted rounded-lg space-y-2">
-              <div className="font-medium text-foreground">{selectedLLMData.name}</div>
-              <div className="text-sm text-muted-foreground">Rank #{selectedLLMData.rank}</div>
+            <div className="p-4 bg-muted rounded-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="font-medium text-foreground">{selectedLLMData.name}</div>
+                {providers.find(p => p.id === selectedLLM || p.name === selectedLLMData.name)?.apiKey ? (
+                  <span className="text-[10px] bg-green-500/10 text-green-600 px-2 py-0.5 rounded-full border border-green-200/20">
+                    API Active
+                  </span>
+                ) : (
+                  <span className="text-[10px] bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full border border-yellow-200/20">
+                    Using Demo
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-[10px] uppercase text-muted-foreground font-semibold">Configured Model</div>
+                <div className="text-sm font-mono text-foreground bg-background/50 px-2 py-1 rounded">
+                  {providers.find(p => p.id === selectedLLM || p.name === selectedLLMData.name)?.selectedModel || "default-model"}
+                </div>
+              </div>
+
               <div className="flex gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
                 <div>
                   <div className="font-medium text-foreground">{selectedLLMData.sentiment}%</div>
@@ -210,9 +229,8 @@ export function RealtimeChat({ llms, prompts }: RealtimeChatProps) {
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-lg p-4 ${
-                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-                  }`}
+                  className={`max-w-[80%] rounded-lg p-4 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                    }`}
                 >
                   {message.role === "assistant" && message.llm && (
                     <div className="text-xs font-medium mb-2 opacity-70">{message.llm}</div>

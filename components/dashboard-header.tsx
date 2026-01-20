@@ -2,7 +2,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "lucide-react"
 import { SettingsDialog } from "@/components/settings-dialog"
-import type { MonitoringPrompt, LLM } from "@/app/page"
+import type { MonitoringPrompt, LLM, LLMProviderConfig } from "@/app/page"
 
 type DashboardHeaderProps = {
   timeRange: string;
@@ -12,6 +12,8 @@ type DashboardHeaderProps = {
   onRemovePrompt: (id: string) => void;
   llms: LLM[];
   onRemoveLLM: (id: string) => void;
+  providers: LLMProviderConfig[];
+  onUpdateProviders: (providers: LLMProviderConfig[]) => void;
 }
 
 export function DashboardHeader({
@@ -22,10 +24,20 @@ export function DashboardHeader({
   onRemovePrompt,
   llms,
   onRemoveLLM,
+  providers,
+  onUpdateProviders,
 }: DashboardHeaderProps) {
   return (
     <div className="flex items-center gap-3">
-      <SettingsDialog prompts={prompts} onAddPrompt={onAddPrompt} onRemovePrompt={onRemovePrompt} llms={llms} onRemoveLLM={onRemoveLLM} />
+      <SettingsDialog
+        prompts={prompts}
+        onAddPrompt={onAddPrompt}
+        onRemovePrompt={onRemovePrompt}
+        llms={llms}
+        onRemoveLLM={onRemoveLLM}
+        providers={providers}
+        onUpdateProviders={onUpdateProviders}
+      />
       <Select value={timeRange} onValueChange={onTimeRangeChange}>
         <SelectTrigger className="w-[140px]">
           <Calendar className="mr-2 h-4 w-4" />

@@ -45,6 +45,15 @@ export type LLMProviderConfig = {
   selectedModel: string;
 };
 
+export const PROVIDER_MODELS: Record<string, string[]> = {
+  "OpenAI": ["o1", "o1-mini", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+  "Claude": ["claude-3-5-sonnet", "claude-3-5-haiku", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+  "Google": ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro"],
+  "Grok": ["grok-2-1212", "grok-2-mini-1212", "grok-beta"],
+  "Perplexity": ["sonar-reasoning-pro", "sonar-reasoning", "sonar-pro", "sonar"],
+  "Mistral": ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest"],
+};
+
 const initialLLMs: LLM[] = [
   { id: "1", name: "ChatGPT", sentiment: 85, mentions: 12458, rank: 1, change: 0, responseTime: 850, accuracy: 94 },
   { id: "2", name: "Claude", sentiment: 82, mentions: 9234, rank: 2, change: 1, responseTime: 720, accuracy: 92 },
@@ -102,7 +111,7 @@ const initialProviders: LLMProviderConfig[] = [
     name: "OpenAI",
     enabled: true,
     apiKey: "",
-    models: ["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+    models: PROVIDER_MODELS["OpenAI"],
     selectedModel: "gpt-4o",
   },
   {
@@ -110,7 +119,7 @@ const initialProviders: LLMProviderConfig[] = [
     name: "Claude",
     enabled: true,
     apiKey: "",
-    models: ["claude-3-5-sonnet", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
+    models: PROVIDER_MODELS["Claude"],
     selectedModel: "claude-3-5-sonnet",
   },
   {
@@ -118,8 +127,24 @@ const initialProviders: LLMProviderConfig[] = [
     name: "Google",
     enabled: true,
     apiKey: "",
-    models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+    models: PROVIDER_MODELS["Google"],
     selectedModel: "gemini-2.0-flash",
+  },
+  {
+    id: "4",
+    name: "Grok",
+    enabled: true,
+    apiKey: "",
+    models: PROVIDER_MODELS["Grok"],
+    selectedModel: "grok-2-1212",
+  },
+  {
+    id: "5",
+    name: "Perplexity",
+    enabled: true,
+    apiKey: "",
+    models: PROVIDER_MODELS["Perplexity"],
+    selectedModel: "sonar-pro",
   },
 ]
 
@@ -131,9 +156,33 @@ export default function Page() {
   const [providers, setProviders] = useState<LLMProviderConfig[]>(initialProviders)
   const [activeTab, setActiveTab] = useState("dashboard")
 
+  const getDefaultProviderSettings = (id: string, name: string): LLMProviderConfig => {
+    const normalizedName =
+      name.includes("ChatGPT") ? "OpenAI" :
+        name.includes("Claude") ? "Claude" :
+          (name.includes("Gemini") || name.includes("Google")) ? "Google" :
+            (name.includes("Grok") || name.includes("xAI")) ? "Grok" :
+              name.includes("Perplexity") ? "Perplexity" :
+                name.includes("Mistral") ? "Mistral" :
+                  name;
+
+    const models = PROVIDER_MODELS[normalizedName] || ["default-model"];
+    const selectedModel = models[0];
+
+    return {
+      id,
+      name,
+      enabled: true,
+      apiKey: "",
+      models,
+      selectedModel,
+    };
+  };
+
   const handleAddLLM = (name: string) => {
+    const id = Date.now().toString();
     const newLLM: LLM = {
-      id: Date.now().toString(),
+      id,
       name,
       sentiment: Math.floor(Math.random() * 30) + 60,
       mentions: Math.floor(Math.random() * 5000) + 1000,
@@ -143,10 +192,12 @@ export default function Page() {
       accuracy: Math.floor(Math.random() * 15) + 80,
     }
     setLLMs([...llms, newLLM])
+    setProviders([...providers, getDefaultProviderSettings(id, name)])
   }
 
   const handleRemoveLLM = (id: string) => {
     setLLMs(llms.filter((llm) => llm.id !== id))
+    setProviders(providers.filter((p) => p.id !== id))
   }
 
   const handleAddPrompt = (label: string, prompt: string, country: string, language: string) => {
@@ -182,6 +233,8 @@ export default function Page() {
                 onRemovePrompt={handleRemovePrompt}
                 llms={llms}
                 onRemoveLLM={handleRemoveLLM}
+                providers={providers}
+                onUpdateProviders={setProviders}
               />
             </div>
           </header>
@@ -206,7 +259,7 @@ export default function Page() {
               )}
 
               {activeTab === "realtime" && (
-                <RealtimeChat llms={llms} prompts={prompts} />
+                <RealtimeChat llms={llms} prompts={prompts} providers={providers} />
               )}
 
               {activeTab === "prompts" && (

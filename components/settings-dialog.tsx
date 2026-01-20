@@ -19,19 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Settings, Plus, Trash2, Eye, EyeOff, X } from "lucide-react";
+import { Settings, Plus, Trash2, Eye, EyeOff, X, Loader2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { MonitoringPrompt, LLM } from "@/app/page";
-
-type LLMProvider = {
-  id: string;
-  name: string;
-  enabled: boolean;
-  apiKey: string;
-  showKey: boolean;
-  models: string[];
-  selectedModel: string;
-};
+import type { MonitoringPrompt, LLM, LLMProviderConfig } from "@/app/page";
+import { PROVIDER_MODELS } from "@/app/page";
 
 type SettingsDialogProps = {
   prompts: MonitoringPrompt[];
@@ -39,6 +30,8 @@ type SettingsDialogProps = {
   onRemovePrompt: (id: string) => void;
   llms: LLM[];
   onRemoveLLM: (id: string) => void;
+  providers: LLMProviderConfig[];
+  onUpdateProviders: (providers: LLMProviderConfig[]) => void;
 };
 
 export function SettingsDialog({
@@ -47,6 +40,8 @@ export function SettingsDialog({
   onRemovePrompt,
   llms,
   onRemoveLLM,
+  providers,
+  onUpdateProviders,
 }: SettingsDialogProps) {
   const [open, setOpen] = useState(false);
   const [newPromptLabel, setNewPromptLabel] = useState("");
@@ -57,66 +52,13 @@ export function SettingsDialog({
   const [brandName, setBrandName] = useState("");
   const [activeTab, setActiveTab] = useState<"llm" | "general" | "prompts">("llm");
 
-  // Initialize providers from LLMs, with default settings for known providers
-  const getDefaultProviderSettings = (llm: LLM): LLMProvider => {
-    const defaultSettings: Record<string, Partial<LLMProvider>> = {
-      "OpenAI": {
-        models: ["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
-        selectedModel: "gpt-4o",
-      },
-      "Claude": {
-        models: ["claude-3-5-sonnet", "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"],
-        selectedModel: "claude-3-5-sonnet",
-      },
-      "Google": {
-        models: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
-        selectedModel: "gemini-2.0-flash",
-      },
-      "xAI": {
-        models: ["grok-2", "grok-2-mini"],
-        selectedModel: "grok-2",
-      },
-      "Perplexity": {
-        models: ["sonar-pro", "sonar", "sonar-reasoning"],
-        selectedModel: "sonar-pro",
-      },
-    };
+  const [draftProviders, setDraftProviders] = useState<LLMProviderConfig[]>(providers);
+  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
-    const settings = defaultSettings[llm.name] || {
-      models: ["default-model"],
-      selectedModel: "default-model",
-    };
-
-    return {
-      id: llm.id,
-      name: llm.name,
-      enabled: true, // New LLMs are enabled by default
-      apiKey: "",
-      showKey: false,
-      models: settings.models || ["default-model"],
-      selectedModel: settings.selectedModel || "default-model",
-    };
-  };
-
-  const [providers, setProviders] = useState<LLMProvider[]>([]);
-
-  // Initialize and sync providers with LLMs
   useEffect(() => {
-    const llmIds = new Set(llms.map(llm => llm.id));
-    const currentIds = new Set(providers.map(p => p.id));
-
-    // Remove providers that no longer have corresponding LLMs
-    const filteredProviders = providers.filter(p => llmIds.has(p.id));
-
-    // Add new providers for LLMs that don't have them
-    const newProviders = llms
-      .filter(llm => !currentIds.has(llm.id))
-      .map(getDefaultProviderSettings);
-
-    if (filteredProviders.length !== providers.length || newProviders.length > 0) {
-      setProviders([...filteredProviders, ...newProviders]);
-    }
-  }, [llms]);;
+    setDraftProviders(providers);
+  }, [providers]);
 
   const handleAddPrompt = () => {
     if (newPromptLabel.trim() && newPromptText.trim()) {
@@ -127,25 +69,31 @@ export function SettingsDialog({
   };
 
   const toggleProvider = (id: string) => {
-    setProviders(
-      providers.map((p) => (p.id === id ? { ...p, enabled: !p.enabled } : p)),
+    setDraftProviders(
+      draftProviders.map((p) => (p.id === id ? { ...p, enabled: !p.enabled } : p)),
     );
   };
 
   const updateApiKey = (id: string, apiKey: string) => {
-    setProviders(providers.map((p) => (p.id === id ? { ...p, apiKey } : p)));
+    setDraftProviders(draftProviders.map((p) => (p.id === id ? { ...p, apiKey } : p)));
   };
 
   const toggleShowKey = (id: string) => {
-    setProviders(
-      providers.map((p) => (p.id === id ? { ...p, showKey: !p.showKey } : p)),
-    );
+    setShowKeys(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const updateSelectedModel = (id: string, model: string) => {
-    setProviders(
-      providers.map((p) => (p.id === id ? { ...p, selectedModel: model } : p)),
+    setDraftProviders(
+      draftProviders.map((p) => (p.id === id ? { ...p, selectedModel: model } : p)),
     );
+  };
+
+  const handleSaveProviders = async () => {
+    setIsSaving(true);
+    // Simulate API validation
+    await new Promise(resolve => setTimeout(resolve, 800));
+    onUpdateProviders(draftProviders);
+    setIsSaving(false);
   };
 
   return (
@@ -222,7 +170,7 @@ export function SettingsDialog({
                 </div>
 
                 <div className="space-y-4">
-                  {providers.map((provider) => (
+                  {draftProviders.map((provider) => (
                     <div
                       key={provider.id}
                       className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-all duration-200"
@@ -284,11 +232,21 @@ export function SettingsDialog({
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                {provider.models.map((model) => (
-                                  <SelectItem key={model} value={model}>
-                                    {model}
-                                  </SelectItem>
-                                ))}
+                                {(() => {
+                                  const normalizedName =
+                                    provider.name.includes("ChatGPT") ? "OpenAI" :
+                                      provider.name.includes("Claude") ? "Claude" :
+                                        (provider.name.includes("Gemini") || provider.name.includes("Google")) ? "Google" :
+                                          (provider.name.includes("Grok") || provider.name.includes("xAI")) ? "Grok" :
+                                            provider.name.includes("Perplexity") ? "Perplexity" :
+                                              provider.name.includes("Mistral") ? "Mistral" :
+                                                provider.name;
+                                  return (PROVIDER_MODELS[normalizedName] || provider.models).map((model) => (
+                                    <SelectItem key={model} value={model}>
+                                      {model}
+                                    </SelectItem>
+                                  ));
+                                })()}
                               </SelectContent>
                             </Select>
                           </div>
@@ -303,7 +261,7 @@ export function SettingsDialog({
                             <div className="relative">
                               <Input
                                 id={`api-key-${provider.id}`}
-                                type={provider.showKey ? "text" : "password"}
+                                type={showKeys[provider.id] ? "text" : "password"}
                                 placeholder="sk-..."
                                 value={provider.apiKey}
                                 onChange={(e) =>
@@ -318,7 +276,7 @@ export function SettingsDialog({
                                 className="absolute right-1 top-1 h-9 w-9"
                                 onClick={() => toggleShowKey(provider.id)}
                               >
-                                {provider.showKey ? (
+                                {showKeys[provider.id] ? (
                                   <EyeOff className="h-4 w-4" />
                                 ) : (
                                   <Eye className="h-4 w-4" />
@@ -333,8 +291,19 @@ export function SettingsDialog({
                 </div>
 
                 <div className="flex gap-3 mt-6">
-                  <Button className="flex-1 h-11 text-sm font-medium">
-                    Save Provider Settings
+                  <Button
+                    className="flex-1 h-11 text-sm font-medium"
+                    onClick={handleSaveProviders}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Testing & Saving...
+                      </>
+                    ) : (
+                      "Save Provider Settings"
+                    )}
                   </Button>
                 </div>
               </div>
